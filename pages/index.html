@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>หน้าแรก - FoodDelivery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+  <header id="main-header"></header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="hero-title animate-fade-in">สั่งอาหารง่าย ๆ <br>ได้ทุกที่ ทุกเวลา</h1>
+        <p class="hero-subtitle">บริการจัดส่งอาหารที่รวดเร็ว ร้อน และอร่อย ถึงมือคุณ</p>
+        <div class="hero-search">
+          <input type="text" placeholder="ค้นหาร้านอาหารหรือเมนูที่คุณชอบ..." class="search-input" id="search-input">
+          <button class="search-btn" onclick="searchFood()">🔍 ค้นหา</button>
+        </div>
+      </div>
+      <div class="hero-image">
+        <div class="floating-card" style="animation-delay: 0s;">🍕</div>
+        <div class="floating-card" style="animation-delay: 0.3s;">🍔</div>
+        <div class="floating-card" style="animation-delay: 0.6s;">🍜</div>
+        <div class="floating-card" style="animation-delay: 0.9s;">🍱</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">หมวดหมู่อาหาร</h2>
+      <div class="categories">
+        <a href="menu.html?category=thai" class="category-card">
+          <div class="category-icon">🍜</div>
+          <h4>อาหารไทย</h4>
+        </a>
+        <a href="menu.html?category=fast-food" class="category-card">
+          <div class="category-icon">🍔</div>
+          <h4>ฟาสต์ฟู้ด</h4>
+        </a>
+        <a href="menu.html?category=japanese" class="category-card">
+          <div class="category-icon">🍱</div>
+          <h4>อาหารญี่ปุ่น</h4>
+        </a>
+        <a href="menu.html?category=dessert" class="category-card">
+          <div class="category-icon">🍰</div>
+          <h4>ของหวาน</h4>
+        </a>
+        <a href="menu.html?category=drink" class="category-card">
+          <div class="category-icon">🧋</div>
+          <h4>เครื่องดื่ม</h4>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popular Menu -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">เมนูยอดนิยม</h2>
+        <a href="menu.html" class="view-all">ดูทั้งหมด →</a>
+      </div>
+      <div class="grid grid-4" id="popular-menu"></div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="section features-section">
+    <div class="container">
+      <div class="features">
+        <div class="feature">
+          <div class="feature-icon">⚡</div>
+          <h3>จัดส่งรวดเร็ว</h3>
+          <p>ส่งถึงมือคุณภายใน 30 นาที</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🎯</div>
+          <h3>ติดตามออเดอร์</h3>
+          <p>ติดตามสถานะได้แบบเรียลไทม์</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">💳</div>
+          <h3>ชำระเงินสะดวก</h3>
+          <p>รองรับหลายช่องทาง</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">⭐</div>
+          <h3>คุณภาพรับรอง</h3>
+          <p>ร้านอาหารคุณภาพทุกร้าน</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer id="main-footer"></footer>
+
+  <style>
+    .hero {
+      background: linear-gradient(135deg, var(--primary-red) 0%, var(--accent-orange) 100%);
+      padding: var(--spacing-xl) 0;
+      margin: 0 calc(-1 * var(--spacing-md));
+      margin-top: calc(-1 * 80px);
+      padding-top: calc(var(--spacing-xl) + 80px);
+    }
+
+    .hero .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-xl);
+      align-items: center;
+    }
+
+    .hero-content {
+      color: var(--white);
+    }
+
+    .hero-title {
+      font-size: 3rem;
+      margin-bottom: var(--spacing-md);
+      line-height: 1.2;
+    }
+
+    .hero-subtitle {
+      font-size: 1.2rem;
+      margin-bottom: var(--spacing-lg);
+      opacity: 0.9;
+    }
+
+    .hero-search {
+      display: flex;
+      gap: var(--spacing-sm);
+      background: var(--white);
+      padding: 8px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .search-input {
+      flex: 1;
+      border: none;
+      padding: 12px 16px;
+      font-size: 1rem;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .search-btn {
+      background: linear-gradient(135deg, var(--primary-yellow), var(--secondary-yellow));
+      color: var(--dark-text);
+      padding: 12px 24px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      transition: all var(--transition-fast);
+    }
+
+    .search-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .hero-image {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-md);
+    }
+
+    .floating-card {
+      background: var(--white);
+      padding: var(--spacing-xl);
+      border-radius: var(--radius-lg);
+      font-size: 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-lg);
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .section {
+      padding: var(--spacing-xl) 0;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .section-title {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .view-all {
+      color: var(--primary-red);
+      font-weight: 600;
+      transition: all var(--transition-fast);
+    }
+
+    .view-all:hover {
+      transform: translateX(4px);
+    }
+
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: var(--spacing-md);
+    }
+
+    .category-card {
+      background: var(--white);
+      padding: var(--spacing-lg);
+      border-radius: var(--radius-lg);
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition-normal);
+    }
+
+    .category-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .category-icon {
+      font-size: 3rem;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .category-card h4 {
+      color: var(--dark-text);
+      font-weight: 600;
+    }
+
+    .features-section {
+      background: var(--white);
+      margin: 0 calc(-1 * var(--spacing-md));
+      padding: var(--spacing-xl) var(--spacing-md);
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--spacing-xl);
+    }
+
+    .feature {
+      text-align: center;
+    }
+
+    .feature-icon {
+      font-size: 4rem;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .feature h3 {
+      margin-bottom: var(--spacing-xs);
+      color: var(--dark-text);
+    }
+
+    .feature p {
+      color: var(--gray-text);
+    }
+
+    .menu-card {
+      cursor: pointer;
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: all 0.3s;
+    }
+
+    .menu-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    }
+
+    .menu-image {
+      height: 200px;
+      overflow: hidden;
+      background: #F5F5F5;
+      position: relative;
+    }
+
+    .menu-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+
+    .menu-card:hover .menu-image img {
+      transform: scale(1.05);
+    }
+
+    .menu-info {
+      padding: var(--spacing-md);
+    }
+
+    .menu-info h4 {
+      margin-bottom: var(--spacing-xs);
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .restaurant-name {
+      color: var(--gray-text);
+      font-size: 0.9rem;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .menu-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: var(--spacing-sm);
+    }
+
+    .price {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary-red);
+    }
+
+    .btn-sm {
+      padding: 8px 16px;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      .hero .container {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-title {
+        font-size: 2rem;
+      }
+
+      .hero-image {
+        display: none;
+      }
+
+      .categories {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+
+  <script src="../js/main.js"></script>
+  <script>
+    // Popular menu data - ใช้รูปภาพเดียวกันกับหน้าเมนู
+    const popularMenu = [
+      { 
+        id: 1, 
+        name: 'ผัดไทยกุ้งสด', 
+        price: 60, 
+        image: '../images/padthai.jpg', 
+        restaurant: 'ร้านอาหารไทยแท้', 
+        rating: 4.5,
+        category: 'thai',
+        desc: 'ผัดไทยรสชาติเข้มข้น กุ้งสดใหญ่'
+      },
+      { 
+        id: 4, 
+        name: 'เบอร์เกอร์ชีส', 
+        price: 89, 
+        image: '../images/burger.jpg', 
+        restaurant: 'Burger House', 
+        rating: 4.7,
+        category: 'fast-food',
+        desc: 'เบอร์เกอร์เนื้อชั้นดีพร้อมชีส'
+      },
+      { 
+        id: 3, 
+        name: 'ข้าวผัดกุ้ง', 
+        price: 80, 
+        image: '../images/fried-rice.jpg', 
+        restaurant: 'ครัวคุณแม่', 
+        rating: 4.6,
+        category: 'thai',
+        desc: 'ข้าวผัดกุ้งสดหอมๆ'
+      },
+      { 
+        id: 7, 
+        name: 'ซูชิ', 
+        price: 120, 
+        image: '../images/sushi.jpg', 
+        restaurant: 'Sushi Bar', 
+        rating: 4.8,
+        category: 'japanese',
+        desc: 'ซูชิสดใหม่รวม 12 ชิ้น'
+      }
+    ];
+
+    function renderPopularMenu() {
+      const container = document.getElementById('popular-menu');
+      container.innerHTML = popularMenu.map(item => `
+        <div class="menu-card">
+          <div class="menu-image">
+            <img src="${item.image}" 
+                 alt="${item.name}" 
+                 onerror="this.style.fontSize='4rem'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.style.background='linear-gradient(135deg, #FFF9E6, #FFE6CC)'; this.innerHTML='🍴';">
+          </div>
+          <div class="menu-info">
+            <h4>${item.name}</h4>
+            <p class="restaurant-name">${item.restaurant}</p>
+            <div style="color:#FFC857; font-weight:600; margin-bottom:0.5rem;">⭐ ${item.rating}</div>
+            <div class="menu-footer">
+              <span class="price">${formatPrice(item.price)}</span>
+              <button onclick='addToCart(${JSON.stringify(item).replace(/'/g, "\\'")}); return false;' class="btn btn-primary btn-sm">เพิ่ม</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function searchFood() {
+      const query = document.getElementById('search-input').value;
+      if (query) {
+        window.location.href = `menu.html?search=${encodeURIComponent(query)}`;
+      }
+    }
+
+    renderPopularMenu();
+  </script>
+</body>
+</html>

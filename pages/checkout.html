@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ชำระเงิน - FoodDelivery</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+  
+  <style>
+    /* Additional styles for checkout page */
+    .cart-layout {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 3rem;
+      margin: 2rem 0;
+    }
+    
+    .payment-card {
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .payment-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    #upload-label:hover {
+      border-color: #E63946;
+      background: #FFF5F5;
+    }
+    
+    @media (max-width: 768px) {
+      .cart-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header id="main-header"></header>
+  
+  <div class="container">
+    <div style="text-align:center;margin:3rem 0;">
+      <h1>ชำระเงิน</h1>
+    </div>
+    
+    <div class="cart-layout">
+      <!-- Left Column - Form -->
+      <div style="background:#fff;border-radius:16px;padding:2rem;box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+        <form id="checkout-form">
+          <h3 style="margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:2px solid #F5F5F5;">
+            ข้อมูลการจัดส่ง
+          </h3>
+          
+          <div class="form-group">
+            <label class="form-label">ชื่อผู้รับ <span style="color:#E63946;">*</span></label>
+            <input type="text" class="form-control" id="receiver-name" required placeholder="กรอกชื่อผู้รับ">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">เบอร์โทรศัพท์ <span style="color:#E63946;">*</span></label>
+            <input type="tel" class="form-control" id="phone" required placeholder="0XX-XXX-XXXX">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">ที่อยู่จัดส่ง <span style="color:#E63946;">*</span></label>
+            <textarea class="form-control" id="address" rows="3" required placeholder="กรอกที่อยู่สำหรับจัดส่ง"></textarea>
+          </div>
+          
+          <h3 style="margin:2rem 0 1.5rem;padding-bottom:1rem;border-bottom:2px solid #F5F5F5;">
+            วิธีการชำระเงิน
+          </h3>
+          
+          <div style="display:grid;gap:1rem;">
+            <!-- Cash Payment -->
+            <label style="cursor:pointer;">
+              <input type="radio" name="payment" value="cash" checked style="display:none;">
+              <div class="payment-card" style="display:flex;align-items:center;gap:1.5rem;padding:1.5rem;border:2px solid #E63946;border-radius:12px;background:#FFF5F5;transition:all 0.3s;">
+                <div style="font-size:2rem;width:60px;height:60px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;border-radius:12px;">💵</div>
+                <div>
+                  <div style="font-weight:600;color:#333;">เงินสด</div>
+                  <div style="font-size:0.9rem;color:#666;">ชำระเมื่อได้รับสินค้า</div>
+                </div>
+              </div>
+            </label>
+            
+            <!-- QR Payment -->
+            <label style="cursor:pointer;">
+              <input type="radio" name="payment" value="qr" style="display:none;">
+              <div class="payment-card" style="display:flex;align-items:center;gap:1.5rem;padding:1.5rem;border:2px solid #E5E5E5;border-radius:12px;transition:all 0.3s;">
+                <div style="font-size:2rem;width:60px;height:60px;display:flex;align-items:center;justify-content:center;background:#F5F5F5;border-radius:12px;">📱</div>
+                <div>
+                  <div style="font-weight:600;color:#333;">QR Code PromptPay</div>
+                  <div style="font-size:0.9rem;color:#666;">สแกน QR เพื่อชำระเงิน</div>
+                </div>
+              </div>
+            </label>
+          </div>
+
+          <!-- QR Payment Section -->
+          <div id="qr-payment-section" style="display:none;margin-top:1.5rem;padding:1.5rem;background:#F9F9F9;border-radius:12px;">
+            <h4 style="margin-bottom:1rem;font-size:1.1rem;color:#333;">
+              สแกน QR Code เพื่อชำระเงิน
+            </h4>
+            
+            <!-- QR Code Display -->
+            <div style="background:#fff;padding:2rem;border-radius:12px;text-align:center;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+              <div id="qr-container" style="margin:0 auto;max-width:300px;">
+                <img id="qr-image" 
+                     src="../images/qr-code.jpg" 
+                     alt="Thai QR Payment - PromptPay" 
+                     style="width:100%;height:auto;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,0.1);">
+              </div>
+              
+              <div style="margin-top:1.5rem;">
+                <div style="font-size:1.5rem;font-weight:700;color:#E63946;margin-bottom:0.5rem;" id="qr-amount">฿0</div>
+                <p style="color:#666;font-size:0.9rem;margin-bottom:0.5rem;">
+                  กรุณาสแกน QR Code และชำระเงินผ่าน Mobile Banking
+                </p>
+                <div style="margin-top:1rem;padding:1rem;background:#F9F9F9;border-radius:8px;">
+                  <p style="color:#333;font-size:0.95rem;font-weight:500;margin-bottom:0.25rem;">
+                    ชื่อ: ด.ญ. เจนิสตา เฮงฉุน
+                  </p>
+                  <p style="color:#999;font-size:0.85rem;">
+                    บัญชี: xxx-x-x2545-x
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Upload Payment Proof -->
+            <div style="margin-top:1.5rem;">
+              <label class="form-label">
+                อัปโหลดหลักฐานการโอนเงิน <span style="color:#E63946;">*</span>
+              </label>
+              <div style="position:relative;">
+                <input type="file" id="payment-proof" accept="image/*" style="display:none;">
+                <label for="payment-proof" id="upload-label" 
+                       style="display:flex;align-items:center;justify-content:center;gap:1rem;padding:2rem;border:2px dashed #E5E5E5;border-radius:12px;cursor:pointer;background:#fff;transition:all 0.3s;">
+                  <div style="text-align:center;">
+                    <div style="font-size:3rem;margin-bottom:0.5rem;">📸</div>
+                    <div style="font-weight:600;color:#333;">คลิกเพื่อเลือกรูปภาพ</div>
+                    <div style="font-size:0.9rem;color:#999;margin-top:0.5rem;">
+                      รองรับ JPG, PNG (ไม่เกิน 5MB)
+                    </div>
+                  </div>
+                </label>
+              </div>
+              
+              <!-- Preview uploaded image -->
+              <div id="image-preview" style="display:none;margin-top:1rem;text-align:center;padding:1rem;background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+                <p style="color:#10B981;font-weight:600;margin-bottom:0.5rem;">
+                  ✓ อัปโหลดหลักฐานเรียบร้อย
+                </p>
+                <img id="preview-img" style="max-width:100%;max-height:300px;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,0.1);">
+                <button type="button" id="remove-image-btn" 
+                        style="margin-top:1rem;padding:8px 16px;background:#E63946;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:500;transition:all 0.3s;"
+                        onmouseover="this.style.background='#C52A35'"
+                        onmouseout="this.style.background='#E63946'">
+                  🗑️ ลบรูปภาพ
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width:100%;margin-top:2rem;padding:1rem;font-size:1.1rem;">
+            ยืนยันการสั่งซื้อ
+          </button>
+        </form>
+      </div>
+      
+      <!-- Right Column - Order Summary -->
+      <div style="background:#fff;border-radius:16px;padding:2rem;height:fit-content;position:sticky;top:100px;box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+        <h3 style="margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:2px solid #F5F5F5;">
+          สรุปรายการสั่งซื้อ
+        </h3>
+        
+        <div id="order-items"></div>
+        
+        <div style="height:1px;background:#E5E5E5;margin:1.5rem 0;"></div>
+        
+        <div style="display:flex;justify-content:space-between;margin-bottom:1rem;color:#666;">
+          <span>ยอดรวม</span>
+          <span id="subtotal">฿0</span>
+        </div>
+        
+        <div style="display:flex;justify-content:space-between;margin-bottom:1rem;color:#666;">
+          <span>ค่าจัดส่ง</span>
+          <span>฿30</span>
+        </div>
+        
+        <div style="height:1px;background:#E5E5E5;margin:1.5rem 0;"></div>
+        
+        <div style="display:flex;justify-content:space-between;font-size:1.25rem;font-weight:700;">
+          <span>รวมทั้งหมด</span>
+          <span id="total" style="color:#E63946;">฿0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <footer id="main-footer"></footer>
+
+  <!-- Main.js - Contains all shared functions -->
+  <script src="../js/main.js"></script>
+  
+  <!-- Checkout specific script -->
+  <script>
+    const DELIVERY_FEE = 30;
+    let uploadedImage = null;
+
+    // Render order summary using functions from main.js
+    function renderOrderSummary() {
+      const cart = getCart();
+      
+      if (!cart || cart.length === 0) {
+        document.getElementById('order-items').innerHTML = `
+          <div style="text-align:center;padding:2rem;color:#999;">
+            <p style="margin-bottom:1rem;">ไม่มีสินค้าในตะกร้า</p>
+            <a href="menu.html" style="color:#E63946;text-decoration:none;font-weight:600;">
+              เลือกสินค้า →
+            </a>
+          </div>
+        `;
+        return;
+      }
+      
+      document.getElementById('order-items').innerHTML = cart.map(item => `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem;background:#F9F9F9;border-radius:8px;margin-bottom:1rem;">
+          <div style="flex:1;">
+            <div style="font-weight:600;color:#333;margin-bottom:0.25rem;">${item.name}</div>
+            <div style="font-size:0.9rem;color:#666;">จำนวน: ${item.quantity}</div>
+          </div>
+          <div style="font-weight:700;color:#E63946;">${formatPrice(item.price * item.quantity)}</div>
+        </div>
+      `).join('');
+      
+      const subtotal = getCartTotal();
+      document.getElementById('subtotal').textContent = formatPrice(subtotal);
+      document.getElementById('total').textContent = formatPrice(subtotal + DELIVERY_FEE);
+      document.getElementById('qr-amount').textContent = formatPrice(subtotal + DELIVERY_FEE);
+    }
+
+    // Pre-fill user data if logged in
+    const user = getCurrentUser();
+    if (user) {
+      document.getElementById('receiver-name').value = user.name || '';
+      document.getElementById('phone').value = user.phone || '';
+      document.getElementById('address').value = user.address || '';
+    }
+
+    // Payment method selection
+    document.querySelectorAll('input[name="payment"]').forEach(radio => {
+      radio.addEventListener('change', function() {
+        // Reset all payment cards
+        document.querySelectorAll('.payment-card').forEach(card => {
+          card.style.border = '2px solid #E5E5E5';
+          card.style.background = '#fff';
+        });
+        
+        // Highlight selected card
+        const selectedCard = this.nextElementSibling;
+        selectedCard.style.border = '2px solid #E63946';
+        selectedCard.style.background = '#FFF5F5';
+
+        // Show/hide QR payment section
+        const qrSection = document.getElementById('qr-payment-section');
+        if (this.value === 'qr') {
+          qrSection.style.display = 'block';
+        } else {
+          qrSection.style.display = 'none';
+          uploadedImage = null;
+          document.getElementById('image-preview').style.display = 'none';
+        }
+      });
+    });
+
+    // Handle file upload
+    document.getElementById('payment-proof').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        showNotification('ไฟล์มีขนาดใหญ่เกิน 5MB', 'error');
+        this.value = '';
+        return;
+      }
+
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        showNotification('กรุณาอัปโหลดไฟล์รูปภาพเท่านั้น', 'error');
+        this.value = '';
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        uploadedImage = e.target.result;
+        document.getElementById('preview-img').src = e.target.result;
+        document.getElementById('image-preview').style.display = 'block';
+        showNotification('อัปโหลดหลักฐานการโอนเงินเรียบร้อย', 'success');
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Remove image
+    document.getElementById('remove-image-btn').addEventListener('click', function() {
+      uploadedImage = null;
+      document.getElementById('payment-proof').value = '';
+      document.getElementById('image-preview').style.display = 'none';
+      showNotification('ลบรูปภาพเรียบร้อย', 'success');
+    });
+
+    // Form submission
+    document.getElementById('checkout-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const cart = getCart();
+      
+      // Check if cart is empty
+      if (!cart || cart.length === 0) {
+        showNotification('ตะกร้าสินค้าว่างเปล่า กรุณาเลือกสินค้าก่อน', 'error');
+        setTimeout(() => {
+          window.location.href = 'menu.html';
+        }, 1500);
+        return;
+      }
+
+      const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
+
+      // Validate QR payment
+      if (paymentMethod === 'qr' && !uploadedImage) {
+        showNotification('กรุณาอัปโหลดหลักฐานการโอนเงิน', 'error');
+        return;
+      }
+
+      // Create order using function from main.js
+      const order = createOrder({
+        items: cart,
+        receiverName: document.getElementById('receiver-name').value,
+        phone: document.getElementById('phone').value,
+        address: document.getElementById('address').value,
+        paymentMethod: paymentMethod,
+        paymentProof: uploadedImage || null,
+        subtotal: getCartTotal(),
+        deliveryFee: DELIVERY_FEE,
+        total: getCartTotal() + DELIVERY_FEE
+      });
+
+      showNotification('สั่งซื้อสำเร็จ! กำลังไปหน้าติดตามสถานะ...', 'success');
+      
+      // Clear cart
+      localStorage.removeItem('cart');
+      updateCartCount();
+      
+      // Redirect to tracking page
+      setTimeout(() => {
+        window.location.href = `tracking.html?order=${order.id}`;
+      }, 1500);
+    });
+
+    // Initialize on page load
+    renderOrderSummary();
+  </script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ตะกร้าสินค้า - FoodDelivery</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+  <style>
+    .cart-layout {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 3rem;
+    }
+    
+    .cart-item-image {
+      width: 100px;
+      height: 100px;
+      border-radius: 12px;
+      object-fit: cover;
+      background: linear-gradient(135deg, #FFF9E6, #FFE6CC);
+    }
+    
+    @media(max-width:768px) {
+      .cart-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header id="main-header"></header>
+  <div class="container">
+    <div style="text-align:center; margin:3rem 0;">
+      <h1>ตะกร้าสินค้า</h1>
+    </div>
+    <div class="cart-layout" style="margin-top:2rem;">
+      <div id="cart-items"></div>
+      <div style="background:#fff; border-radius:16px; padding:2rem; box-shadow:0 2px 8px rgba(0,0,0,0.08); height:fit-content; position:sticky; top:100px;">
+        <h3 style="margin-bottom:1.5rem; padding-bottom:1.5rem; border-bottom:2px solid #F5F5F5;">
+          สรุปรายการสั่งซื้อ
+        </h3>
+        <div style="display:flex; justify-content:space-between; margin-bottom:1rem; color:#666;">
+          <span>ยอดรวม</span>
+          <span id="subtotal">฿0</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:1rem; color:#666;">
+          <span>ค่าจัดส่ง</span>
+          <span id="delivery-fee">฿30</span>
+        </div>
+        <div style="height:1px; background:#E5E5E5; margin:1.5rem 0;"></div>
+        <div style="display:flex; justify-content:space-between; font-size:1.25rem; font-weight:700; margin-bottom:1.5rem;">
+          <span>รวมทั้งหมด</span>
+          <span id="total" style="color:#E63946;">฿0</span>
+        </div>
+        <button onclick="proceedToCheckout()" class="btn btn-primary" style="width:100%;">
+          ดำเนินการชำระเงิน
+        </button>
+      </div>
+    </div>
+  </div>
+  <footer id="main-footer"></footer>
+  
+  <script src="../js/main.js"></script>
+  <script>
+    const DELIVERY_FEE = 30;
+    
+    // แมปรูปภาพตาม ID ของเมนู
+    const imageMap = {
+      1: '../images/padthai.jpg',
+      2: '../images/tomyum.jpg',
+      3: '../images/fried-rice.jpg',
+      4: '../images/burger.jpg',
+      5: '../images/pizza.jpg',
+      6: '../images/fried-chicken.jpg',
+      7: '../images/sushi.jpg',
+      8: '../images/ramen.jpg',
+      9: '../images/chocolate-cake.jpg',
+      10: '../images/icecream.jpg',
+      11: '../images/green-tea.jpg',
+      12: '../images/iced-coffee.jpg'
+    };
+    
+    function renderCart() {
+      const cart = getCart();
+      const container = document.getElementById('cart-items');
+      
+      if (!cart.length) {
+        container.innerHTML = `
+          <div style="text-align:center;padding:3rem;background:#fff;border-radius:16px;">
+            <div style="font-size:6rem;margin-bottom:1.5rem;">🛒</div>
+            <h3>ตะกร้าสินค้าว่างเปล่า</h3>
+            <p style="color:#666;margin-bottom:2rem;">เพิ่มสินค้าเพื่อเริ่มสั่งอาหาร</p>
+            <a href="menu.html" class="btn btn-primary">เลือกเมนูอาหาร</a>
+          </div>
+        `;
+        updateSummary(0);
+        return;
+      }
+      
+      container.innerHTML = cart.map(item => {
+        // ใช้รูปภาพจาก imageMap ตาม ID
+        const imageSrc = imageMap[item.id] || '../images/Noodle.jpg';
+        
+        return `
+          <div style="background:#fff;border-radius:16px;padding:1.5rem;display:flex;gap:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.08);margin-bottom:1.5rem;">
+            <div style="width:100px;height:100px;flex-shrink:0;">
+              <img src="${imageSrc}" 
+                   alt="${item.name}"
+                   class="cart-item-image"
+                   onerror="this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.style.fontSize='3rem'; this.innerHTML='🍴'; this.removeAttribute('src');">
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:space-between;">
+              <div>
+                <div style="font-size:1.25rem;font-weight:600;margin-bottom:0.5rem;">
+                  ${item.name}
+                </div>
+                <div style="color:#666;font-size:0.9rem;">
+                  ${item.restaurant || 'ร้านอาหาร'}
+                </div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;">
+                <div style="font-size:1.25rem;font-weight:700;color:#E63946;">
+                  ${formatPrice(item.price * item.quantity)}
+                </div>
+                <div style="display:flex;align-items:center;gap:1rem;">
+                  <div style="display:flex;align-items:center;gap:0.5rem;background:#F5F5F5;border-radius:12px;padding:4px;">
+                    <button onclick="changeQuantity(${item.id},-1)" 
+                            style="width:32px;height:32px;border-radius:8px;background:#fff;border:none;cursor:pointer;font-weight:600;transition:all 0.2s;"
+                            onmouseover="this.style.background='#E63946'; this.style.color='#fff'"
+                            onmouseout="this.style.background='#fff'; this.style.color='#000'">
+                      -
+                    </button>
+                    <span style="min-width:40px;text-align:center;font-weight:600;">
+                      ${item.quantity}
+                    </span>
+                    <button onclick="changeQuantity(${item.id},1)" 
+                            style="width:32px;height:32px;border-radius:8px;background:#fff;border:none;cursor:pointer;font-weight:600;transition:all 0.2s;"
+                            onmouseover="this.style.background='#10B981'; this.style.color='#fff'"
+                            onmouseout="this.style.background='#fff'; this.style.color='#000'">
+                      +
+                    </button>
+                  </div>
+                  <button onclick="handleRemove(${item.id})" 
+                          style="color:#E63946;padding:8px 16px;border-radius:12px;font-weight:500;background:none;border:none;cursor:pointer;transition:all 0.2s;"
+                          onmouseover="this.style.background='#FFF5F5'"
+                          onmouseout="this.style.background='none'">
+                    🗑️ ลบ
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      updateSummary(getCartTotal());
+    }
+    
+    function changeQuantity(itemId, delta) {
+      const cart = getCart();
+      const item = cart.find(i => i.id === itemId);
+      
+      if (item) {
+        updateCartQuantity(itemId, item.quantity + delta);
+        renderCart();
+      }
+    }
+    
+    function handleRemove(itemId) {
+      if (confirm('คุณต้องการลบสินค้านี้ออกจากตะกร้าหรือไม่?')) {
+        removeFromCart(itemId);
+        renderCart();
+        showNotification('ลบสินค้าออกจากตะกร้าแล้ว', 'success');
+      }
+    }
+    
+    function updateSummary(subtotal) {
+      document.getElementById('subtotal').textContent = formatPrice(subtotal);
+      document.getElementById('delivery-fee').textContent = formatPrice(subtotal > 0 ? DELIVERY_FEE : 0);
+      document.getElementById('total').textContent = formatPrice(subtotal > 0 ? subtotal + DELIVERY_FEE : 0);
+    }
+    
+    function proceedToCheckout() {
+      if (!getCart().length) {
+        showNotification('กรุณาเพิ่มสินค้าลงตะกร้าก่อน', 'error');
+        return;
+      }
+      window.location.href = 'checkout.html';
+    }
+    
+    renderCart();
+  </script>
+</body>
+</html>
