@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เมนูอาหาร - FoodExpress</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+  <header id="main-header"></header>
+
+  <div class="container">
+    <div style="text-align:center; margin:3rem 0;">
+      <h1>เมนูอาหาร</h1>
+      <p style="color:#666; font-size:1.1rem;">เลือกอาหารที่คุณชอบจากร้านอาหารคุณภาพ</p>
+    </div>
+
+    <div style="display:flex; gap:1rem; margin-bottom:2rem; overflow-x:auto; padding-bottom:0.5rem;">
+      <button class="filter-btn active" data-category="all" style="padding:10px 20px; border-radius:9999px; background:#fff; font-weight:500; white-space:nowrap; box-shadow:0 2px 8px rgba(0,0,0,0.08); transition:all 0.2s;">ทั้งหมด</button>
+      <button class="filter-btn" data-category="thai" style="padding:10px 20px; border-radius:9999px; background:#fff; font-weight:500; white-space:nowrap; box-shadow:0 2px 8px rgba(0,0,0,0.08); transition:all 0.2s;">อาหารไทย</button>
+      <button class="filter-btn" data-category="fast-food" style="padding:10px 20px; border-radius:9999px; background:#fff; font-weight:500; white-space:nowrap; box-shadow:0 2px 8px rgba(0,0,0,0.08); transition:all 0.2s;">ฟาสต์ฟู้ด</button>
+      <button class="filter-btn" data-category="japanese" style="padding:10px 20px; border-radius:9999px; background:#fff; font-weight:500; white-space:nowrap; box-shadow:0 2px 8px rgba(0,0,0,0.08); transition:all 0.2s;">อาหารญี่ปุ่น</button>
+      <button class="filter-btn" data-category="dessert" style="padding:10px 20px; border-radius:9999px; background:#fff; font-weight:500; white-space:nowrap; box-shadow:0 2px 8px rgba(0,0,0,0.08); transition:all 0.2s;">ของหวาน</button>
+      <button class="filter-btn" data-category="drink" style="padding:10px 20px; border-radius:9999px; background:#fff; font-weight:500; white-space:nowrap; box-shadow:0 2px 8px rgba(0,0,0,0.08); transition:all 0.2s;">เครื่องดื่ม</button>
+    </div>
+
+    <div class="grid grid-3" id="menu-grid"></div>
+  </div>
+
+  <footer id="main-footer"></footer>
+
+  <style>
+    .filter-btn.active {
+      background: linear-gradient(135deg, #E63946, #FF6B35) !important;
+      color: #fff !important;
+    }
+    .menu-item {
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: all 0.3s;
+    }
+    .menu-item:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    }
+  </style>
+
+  <script src="../js/main.js"></script>
+  <script>
+    const menuItems = [
+      { id: 1, name: 'ผัดไทยกุ้งสด', price: 60, image: '../images/padthai.jpg', restaurant: 'ร้านอาหารไทยแท้', category: 'thai', desc: 'ผัดไทยรสชาติเข้มข้น กุ้งสดใหญ่', rating: 4.5 },
+      { id: 2, name: 'ต้มยำกุ้ง', price: 120, image: '../images/tomyum.jpg', restaurant: 'ร้านอาหารไทยแท้', category: 'thai', desc: 'ต้มยำกุ้งแม่น้ำรสจัดจ้าน', rating: 4.8 },
+      { id: 3, name: 'ข้าวผัดกุ้ง', price: 80, image: '../images/fried-rice.jpg', restaurant: 'ครัวคุณแม่', category: 'thai', desc: 'ข้าวผัดกุ้งสดหอมๆ', rating: 4.6 },
+      { id: 4, name: 'เบอร์เกอร์ชีส', price: 89, image: '../images/burger.jpg', restaurant: 'Burger House', category: 'fast-food', desc: 'เบอร์เกอร์เนื้อชั้นดีพร้อมชีส', rating: 4.7 },
+      { id: 5, name: 'พิซซ่า', price: 250, image: '../images/pizza.jpg', restaurant: 'Pizza Palace', category: 'fast-food', desc: 'พิซซ่าหน้าสับปะรดและแฮม', rating: 4.5 },
+      { id: 6, name: 'ไก่ทอด', price: 150, image: '../images/fried-chicken.jpg', restaurant: 'Fried Chicken Co.', category: 'fast-food', desc: 'ไก่ทอดกรอบนอกนุ่มใน', rating: 4.6 },
+      { id: 7, name: 'ซูชิ', price: 120, image: '../images/sushi.jpg', restaurant: 'Sushi Bar', category: 'japanese', desc: 'ซูชิสดใหม่รวม 12 ชิ้น', rating: 4.8 },
+      { id: 8, name: 'ราเมง', price: 140, image: '../images/ramen.jpg', restaurant: 'Ramen Shop', category: 'japanese', desc: 'ราเมงน้ำซุปเข้มข้น', rating: 4.7 },
+      { id: 9, name: 'เค้กช็อกโกแลต', price: 85, image: '../images/chocolate-cake.jpg', restaurant: 'Sweet Bakery', category: 'dessert', desc: 'เค้กช็อกโกแลตเข้มข้น', rating: 4.6 },
+      { id: 10, name: 'ไอศกรีม', price: 60, image: '../images/icecream.jpg', restaurant: 'Ice Cream Shop', category: 'dessert', desc: 'ไอศกรีมหลากหลายรสชาติ', rating: 4.5 },
+      { id: 11, name: 'ชาเขียว', price: 50, image: '../images/green-tea.jpg', restaurant: 'Bubble Tea', category: 'drink', desc: 'ชาเขียวนมสดผสมไข่มุก', rating: 4.7 },
+      { id: 12, name: 'กาแฟ', price: 45, image: '../images/iced-coffee.jpg', restaurant: 'Coffee House', category: 'drink', desc: 'กาแฟเย็นหอมกรุ่น', rating: 4.4 }
+    ];
+
+    let currentCategory = 'all';
+
+    function renderMenu() {
+      const container = document.getElementById('menu-grid');
+      const filtered = currentCategory === 'all' ? menuItems : menuItems.filter(item => item.category === currentCategory);
+
+      container.innerHTML = filtered.map(item => `
+        <div class="menu-item">
+          <div style="height:250px; overflow:hidden; background:#F5F5F5; position:relative;">
+            <img src="${item.image}" 
+                 alt="${item.name}" 
+                 style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s;"
+                 onmouseover="this.style.transform='scale(1.05)'"
+                 onmouseout="this.style.transform='scale(1)'"
+                 onerror="this.style.fontSize='6rem'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.style.background='linear-gradient(135deg, #FFF9E6, #FFE6CC)'; this.innerHTML='🍴';">
+          </div>
+          <div style="padding:1.5rem;">
+            <h3 style="font-size:1.25rem; font-weight:600; margin-bottom:0.5rem;">${item.name}</h3>
+            <div style="color:#666; font-size:0.9rem; margin-bottom:0.5rem;">${item.restaurant}</div>
+            <div style="color:#FFC857; font-weight:600; margin-bottom:1rem;">⭐ ${item.rating}</div>
+            <p style="color:#666; font-size:0.9rem; margin-bottom:1.5rem; line-height:1.5;">${item.desc}</p>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div style="font-size:1.5rem; font-weight:700; color:#E63946;">${formatPrice(item.price)}</div>
+              <button onclick='addToCart(${JSON.stringify(item).replace(/'/g, "\\'")}); return false;' style="background:linear-gradient(135deg,#FFD93D,#FFC857); color:#1A1A1A; padding:10px 20px; border-radius:12px; font-weight:600; border:none; cursor:pointer; transition:all 0.2s;">+ เพิ่มลงตะกร้า</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('filter-btn')) {
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+        currentCategory = e.target.dataset.category;
+        renderMenu();
+      }
+    });
+
+    renderMenu();
+  </script>
+</body>
+</html>

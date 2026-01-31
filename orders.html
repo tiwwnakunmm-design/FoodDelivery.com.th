@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>รายการสั่งซื้อ - FoodDelivery</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+  <style>
+    .order-item-image {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: linear-gradient(135deg, #FFF9E6, #FFE6CC);
+    }
+  </style>
+</head>
+<body>
+  <header id="main-header"></header>
+  <div class="container">
+    <div style="text-align:center;margin:3rem 0;">
+      <h1>รายการสั่งซื้อของฉัน</h1>
+      <p style="color:#666;">ดูประวัติการสั่งอาหารทั้งหมด</p>
+    </div>
+    <div id="orders-list"></div>
+  </div>
+  <footer id="main-footer"></footer>
+  <script src="../js/main.js"></script>
+  <script>
+    const statusConfig = {
+      pending: { label: 'รอยืนยัน', class: 'badge-warning', icon: '⏳' },
+      confirmed: { label: 'ยืนยันแล้ว', class: 'badge-warning', icon: '✓' },
+      preparing: { label: 'กำลังเตรียม', class: 'badge-warning', icon: '👨‍🍳' },
+      delivering: { label: 'กำลังจัดส่ง', class: 'badge-warning', icon: '🛵' },
+      completed: { label: 'สำเร็จ', class: 'badge-success', icon: '✅' },
+      cancelled: { label: 'ยกเลิก', class: 'badge-danger', icon: '❌' }
+    };
+
+    // แมปรูปภาพตาม ID ของเมนู
+    const imageMap = {
+      1: '../images/padthai.jpg',
+      2: '../images/tomyum.jpg',
+      3: '../images/fried-rice.jpg',
+      4: '../images/burger.jpg',
+      5: '../images/pizza.jpg',
+      6: '../images/fried-chicken.jpg',
+      7: '../images/sushi.jpg',
+      8: '../images/ramen.jpg',
+      9: '../images/chocolate-cake.jpg',
+      10: '../images/icecream.jpg',
+      11: '../images/green-tea.jpg',
+      12: '../images/iced-coffee.jpg'
+    };
+
+    function renderOrders() {
+      const orders = getOrders();
+      const container = document.getElementById('orders-list');
+      
+      if (!orders.length) {
+        container.innerHTML = `
+          <div style="text-align:center;padding:3rem;background:#fff;border-radius:16px;">
+            <div style="font-size:6rem;margin-bottom:1.5rem;">📦</div>
+            <h3>ยังไม่มีรายการสั่งซื้อ</h3>
+            <p style="color:#666;margin:1rem 0 2rem;">เริ่มสั่งอาหารเพื่อเห็นรายการที่นี่</p>
+            <a href="menu.html" class="btn btn-primary">สั่งอาหารเลย</a>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = orders.map(order => {
+        const status = statusConfig[order.status];
+        return `
+          <div style="background:#fff;border-radius:16px;padding:2rem;box-shadow:0 2px 8px rgba(0,0,0,0.08);margin-bottom:1.5rem;">
+            <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:2px solid #F5F5F5;">
+              <div>
+                <div style="font-size:1.25rem;font-weight:700;margin-bottom:0.5rem;">
+                  คำสั่งซื้อ #${order.id}
+                </div>
+                <div style="color:#666;font-size:0.9rem;">
+                  ${formatDate(order.date)}
+                </div>
+              </div>
+              <span class="badge ${status.class}">${status.icon} ${status.label}</span>
+            </div>
+
+            <div style="margin-bottom:1.5rem;">
+              ${order.items.map(item => {
+                // ใช้รูปภาพจาก imageMap ตาม ID เท่านั้น
+                const imageSrc = imageMap[item.id] || '../images/Noodle.jpg';
+                
+                return `
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem 0;border-bottom:1px solid #F9F9F9;">
+                  <div style="display:flex;align-items:center;gap:1.5rem;flex:1;">
+                    <div style="width:60px;height:60px;flex-shrink:0;">
+                      <img src="${imageSrc}" 
+                           alt="${item.name}"
+                           class="order-item-image"
+                           onerror="this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.style.fontSize='2rem'; this.innerHTML='🍴'; this.removeAttribute('src');">
+                    </div>
+                    <div style="flex:1;">
+                      <div style="font-weight:600;">${item.name}</div>
+                      <div style="font-size:0.9rem;color:#666;">
+                        ${item.restaurant || 'ร้านอาหาร'} × ${item.quantity}
+                      </div>
+                    </div>
+                  </div>
+                  <div style="font-weight:700;color:#E63946;">
+                    ${formatPrice(item.price * item.quantity)}
+                  </div>
+                </div>
+              `}).join('')}
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;padding-top:1.5rem;border-top:2px solid #F5F5F5;">
+              <div style="font-size:1.25rem;font-weight:700;color:#E63946;">
+                รวม: ${formatPrice(order.total)}
+              </div>
+              <div style="display:flex;gap:1rem;">
+                <a href="tracking.html?order=${order.id}" class="btn btn-secondary">
+                  ติดตามสถานะ
+                </a>
+                ${order.status === 'completed' ? `
+                  <button onclick="reorder('${order.id}')" class="btn btn-primary">
+                    สั่งซ้ำ
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function reorder(orderId) {
+      const order = getOrders().find(o => o.id === orderId);
+      if (order) {
+        // ล้างตะกร้าเดิม
+        localStorage.removeItem('cart');
+        
+        // เพิ่มสินค้าจากออเดอร์เดิม
+        order.items.forEach(item => addToCart(item));
+        
+        showNotification('เพิ่มรายการอาหารลงตะกร้าแล้ว', 'success');
+        setTimeout(() => window.location.href = 'cart.html', 1000);
+      }
+    }
+
+    renderOrders();
+  </script>
+</body>
+</html>

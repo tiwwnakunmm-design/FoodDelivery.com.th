@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>โปรไฟล์ - FoodExpress</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+  <header id="main-header"></header>
+  <div class="container">
+    <div style="text-align:center;margin:3rem 0;"><h1>โปรไฟล์ของฉัน</h1></div>
+    <div style="display:grid;grid-template-columns:300px 1fr;gap:3rem;" class="cart-layout">
+      <div style="background:#fff;border-radius:16px;padding:2rem;box-shadow:0 2px 8px rgba(0,0,0,0.08);height:fit-content;position:sticky;top:100px;text-align:center;">
+        <div style="width:100px;height:100px;background:linear-gradient(135deg,#E63946,#FF6B35);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:3rem;margin:0 auto 1.5rem;box-shadow:0 4px 16px rgba(0,0,0,0.12);">👤</div>
+        <div id="profile-name" style="font-size:1.25rem;font-weight:700;margin-bottom:0.5rem;"></div>
+        <div id="profile-email" style="color:#666;font-size:0.9rem;margin-bottom:2rem;"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem;padding:1.5rem;background:#F9F9F9;border-radius:12px;"><div style="text-align:center;"><div id="total-orders" style="font-size:1.5rem;font-weight:700;color:#E63946;margin-bottom:4px;">0</div><div style="font-size:0.9rem;color:#666;">ออเดอร์ทั้งหมด</div></div><div style="text-align:center;"><div id="total-spent" style="font-size:1.5rem;font-weight:700;color:#E63946;margin-bottom:4px;">฿0</div><div style="font-size:0.9rem;color:#666;">ยอดใช้จ่าย</div></div></div>
+        <button onclick="handleLogout()" class="btn btn-outline" style="width:100%;">ออกจากระบบ</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:2rem;">
+        <div style="background:#fff;border-radius:16px;padding:2rem;">
+          <h3 style="margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:2px solid #F5F5F5;">ข้อมูลส่วนตัว</h3>
+          <form id="profile-form">
+            <div class="form-group"><label class="form-label">ชื่อ-นามสกุล</label><input type="text" class="form-control" id="name" required></div>
+            <div class="form-group"><label class="form-label">อีเมล</label><input type="email" class="form-control" id="email" required></div>
+            <div class="form-group"><label class="form-label">เบอร์โทรศัพท์</label><input type="tel" class="form-control" id="phone" required></div>
+            <div class="form-group"><label class="form-label">ที่อยู่</label><textarea class="form-control" id="address" rows="3" required></textarea></div>
+            <button type="submit" class="btn btn-primary">บันทึกการเปลี่ยนแปลง</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer id="main-footer"></footer>
+  <script src="../js/main.js"></script>
+  <script>
+    function loadProfile(){const user=getCurrentUser();if(!user){window.location.href='login.html';return}document.getElementById('profile-name').textContent=user.name||'ผู้ใช้งาน';document.getElementById('profile-email').textContent=user.email||'';document.getElementById('name').value=user.name||'';document.getElementById('email').value=user.email||'';document.getElementById('phone').value=user.phone||'';document.getElementById('address').value=user.address||'';const orders=getOrders();document.getElementById('total-orders').textContent=orders.length;document.getElementById('total-spent').textContent=formatPrice(orders.reduce((sum,order)=>sum+order.total,0))}
+    document.getElementById('profile-form').addEventListener('submit',e=>{e.preventDefault();loginUser({name:document.getElementById('name').value,email:document.getElementById('email').value,phone:document.getElementById('phone').value,address:document.getElementById('address').value});loadProfile();showNotification('บันทึกข้อมูลเรียบร้อย','success')});
+    function handleLogout(){if(confirm('คุณต้องการออกจากระบบหรือไม่?'))logoutUser()}
+    loadProfile();
+  </script>
+</body>
+</html>
